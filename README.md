@@ -53,10 +53,21 @@ Admin:
 
 ## Installation
 
-1. Build the plugin: `./gradlew shadowJar` (produces `build/libs/claimland-0.1.0.jar`).
-2. Upload the `claimland-0.1.0.jar` to your server `plugins/` folder or GitHub Releases to distribute.
-3. Install Vault and (optionally) PlaceholderAPI and LuckPerms.
+1. Build the plugin: `./gradlew shadowJar` (produces `build/libs/claimland-0.1.0.jar`) or `./gradlew jar` for a fallback JAR.
+2. Upload the `claimland-0.1.0.jar` (or `claimland.jar`) to your server `plugins/` folder or attach it to a GitHub Release.
+3. Install dependencies: `Vault` (for economy), `LuckPerms` (permissions/ranks), `PlaceholderAPI` (optional).
 4. Start server, then edit `config.yml`, `ranks.yml`, and `permissions.yml`.
+
+### LuckPerms examples
+
+- Give a player basic permission:
+  - `/lp user <player> permission set claimland.use true`
+- Create a rank `vip` with permission:
+  - `/lp creategroup vip`
+  - `/lp group vip permission set claimland.land.claim true`
+  - `/lp group vip meta set max-lands 10`
+
+---
 
 ---
 

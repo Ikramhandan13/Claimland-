@@ -1,9 +1,0 @@
-# Fine-grained permissions
-claimland.land.claim:
-  default: true
-claimland.land.unclaim:
-  default: true
-claimland.land.gui:
-  default: true
-claimland.admin.*:
-  default: op

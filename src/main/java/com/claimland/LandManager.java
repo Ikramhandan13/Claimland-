@@ -24,18 +24,19 @@ public class LandManager {
     private void loadAll() {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
-                var rs = db.syncQuery("SELECT * FROM lands");
-                while (rs.next()) {
-                    String id = rs.getString("id");
-                    String name = rs.getString("name");
-                    UUID owner = UUID.fromString(rs.getString("owner"));
-                    String world = rs.getString("world");
-                    int cx = rs.getInt("cx");
-                    int cz = rs.getInt("cz");
-                    long created = rs.getLong("created_at");
-                    Land land = new Land(id, name, owner, world, cx, cz, created);
-                    cache.put(key(world, cx, cz), land);
-                }
+                db.querySync("SELECT * FROM lands", rs -> {
+                    while (rs.next()) {
+                        String id = rs.getString("id");
+                        String name = rs.getString("name");
+                        UUID owner = UUID.fromString(rs.getString("owner"));
+                        String world = rs.getString("world");
+                        int cx = rs.getInt("cx");
+                        int cz = rs.getInt("cz");
+                        long created = rs.getLong("created_at");
+                        Land land = new Land(id, name, owner, world, cx, cz, created);
+                        cache.put(key(world, cx, cz), land);
+                    }
+                });
             } catch (Exception ex) {
                 plugin.getLogger().log(Level.SEVERE, "Failed to load lands", ex);
             }
@@ -64,7 +65,7 @@ public class LandManager {
         return CompletableFuture.runAsync(() -> {
             try {
                 cache.remove(key(land.getWorld(), land.getCx(), land.getCz()));
-                db.syncQuery("DELETE FROM lands WHERE id=?", land.getId());
+                db.executeUpdateSync("DELETE FROM lands WHERE id=?", land.getId());
             } catch (Exception ex) {
                 plugin.getLogger().log(Level.SEVERE, "Failed to unclaim", ex);
             }
@@ -109,7 +110,14 @@ public class LandManager {
         }
     }
 
+    public java.util.concurrent.CompletableFuture<Void> saveAllAsync() {
+        var futures = new java.util.ArrayList<java.util.concurrent.CompletableFuture<Void>>();
+        for (Land land : cache.values()) futures.add(db.saveLandAsync(land));
+        return java.util.concurrent.CompletableFuture.allOf(futures.toArray(new java.util.concurrent.CompletableFuture[0]));
+    }
+
     public void shutdown() {
+        saveAllAsync().join();
         cache.clear();
     }
 }

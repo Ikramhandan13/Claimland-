@@ -15,6 +15,7 @@ public class ClaimLandPlugin extends JavaPlugin {
         instance = this;
         saveDefaultConfig();
         databaseManager = new DatabaseManager(this);
+        validateConfig();
         databaseManager.initialize();
         landManager = new LandManager(this, databaseManager);
         registerCommands();
@@ -23,6 +24,21 @@ public class ClaimLandPlugin extends JavaPlugin {
         scheduleTaxTask();
         registerPAPI();
         getLogger().log(Level.INFO, "ClaimLand enabled");
+    }
+
+    private void validateConfig() {
+        String type = getConfig().getString("database.type", "sqlite");
+        if (!type.equalsIgnoreCase("sqlite") && !type.equalsIgnoreCase("mysql")) {
+            getLogger().warning("Invalid database.type, falling back to sqlite");
+            getConfig().set("database.type", "sqlite");
+            saveConfig();
+        }
+        int page = getConfig().getInt("gui.page-size", 45);
+        if (page % 9 != 0 || page < 9 || page > 54) {
+            getLogger().warning("Invalid gui.page-size, resetting to 45");
+            getConfig().set("gui.page-size", 45);
+            saveConfig();
+        }
     }
 
     public void onDisable() {
@@ -62,7 +78,7 @@ public class ClaimLandPlugin extends JavaPlugin {
     private void scheduleTaxTask() {
         long ticksPerWeek = 20L * 60 * 60 * 24 * 7;
         long period = ticksPerWeek;
-        getServer().getScheduler().runTaskTimerAsynchronously(this, () -> landManager.runWeeklyTax(), period, period);
+        SchedulerUtil.scheduleRepeat(this, () -> landManager.runWeeklyTax(), period, period);
     }
 
     public static ClaimLandPlugin getInstance() {

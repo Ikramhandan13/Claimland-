@@ -31,11 +31,16 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
-    archiveBaseName.set("claimland")
-    archiveClassifier.set("")
-    archiveVersion.set(project.version.toString())
+// Create a simple fat JAR using the standard 'jar' task to avoid shadowJar issues in this environment.
 
+tasks.named<org.gradle.jvm.tasks.Jar>("jar") {
+    archiveBaseName.set("claimland")
+    archiveVersion.set(project.version.toString())
+    duplicatesStrategy = org.gradle.api.file.DuplicatesStrategy.EXCLUDE
+    from({
+        configurations.runtimeClasspath.get().filter { it.name.endsWith(".jar") }.map { zipTree(it) }
+    })
+    exclude("META-INF/*.SF", "META-INF/*.DSA", "META-INF/*.RSA")
 }
 
-tasks.build { dependsOn(tasks.named("shadowJar"))}
+tasks.build { dependsOn(tasks.named("jar"))}
