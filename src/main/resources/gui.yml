@@ -1,0 +1,9 @@
+land-info:
+  title: "Land Info - %land_name%"
+  items:
+    name: PAPER
+    id: 1
+members:
+  title: "Members"
+permissions:
+  title: "Permissions"

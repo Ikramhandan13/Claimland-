@@ -1,0 +1,6 @@
+no-permission: "&cYou do not have permission to do that."
+claim-success: "&aChunk claimed: %land_id%"
+unclaim-success: "&aChunk unclaimed: %land_id%"
+already-claimed: "&cThis chunk is already claimed by %owner%."
+not-claimed: "&cThis chunk is not claimed."
+land-info-format: "&6Land: &f%land_name% &6Owner: &f%land_owner% &6Members: &f%member_count%"

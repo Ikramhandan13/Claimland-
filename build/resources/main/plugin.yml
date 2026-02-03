@@ -1,0 +1,23 @@
+name: ClaimLand
+main: com.claimland.ClaimLandPlugin
+version: 0.1.0
+api-version: 1.21
+depend: [Vault]
+softdepend: [PlaceholderAPI]
+commands:
+  land:
+    description: Land commands (player)
+    usage: /<command> claim|unclaim|info|gui|addmember|delmember
+  landadmin:
+    description: Land admin commands
+    usage: /<command> list|info|delland|transfer|settax|forceclaim|bypass|audit|reload
+permissions:
+  claimland.use:
+    description: Basic use of ClaimLand
+    default: true
+  claimland.admin:
+    description: Admin access for ClaimLand
+    default: op
+  claimland.bypass:
+    description: Bypass land protections
+    default: op

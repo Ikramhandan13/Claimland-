@@ -1,0 +1,6 @@
+default:
+  max-lands: 3
+  tax-multiplier: 1.0
+vip:
+  max-lands: 10
+  tax-multiplier: 0.8
